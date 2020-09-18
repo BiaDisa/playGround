@@ -1,6 +1,5 @@
 package tools.cache.abs.hash;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +51,7 @@ public abstract class RedisMapDao<T> implements CacheMapDao<T> {
             return stringTMap;
         } else {
             Map<String,T> mapRes = new HashMap<>();
-            List<T> dbRes = getFromDB(buildDBQueryWrapper(hashKey));
+            List<T> dbRes = getFromDB(buildQueryParam(hashKey));
             if (!CollectionUtils.isEmpty(dbRes)) {
                 mapRes = convertListToMap(dbRes);
                 insertRecordsToCache(hashKey,mapRes);
@@ -60,6 +59,8 @@ public abstract class RedisMapDao<T> implements CacheMapDao<T> {
             return mapRes;
         }
     }
+
+    protected abstract T buildQueryParam(String hashKey);
 
     public T getSingleRecordFromCache(T param){
         Map<String,T> res = getRecordMapFromCache(hashKey(param));
@@ -94,15 +95,13 @@ public abstract class RedisMapDao<T> implements CacheMapDao<T> {
         return (List<T>)tar.values();
     }
 
-    public List<T> getFromDB(QueryWrapper<T> wrapper){
-        return mapper.selectList(wrapper);
-    }
+    public abstract List<T> getFromDB(T queryParams);
 
     //redis的key
     public abstract String redisPrefix();
 
-    public abstract QueryWrapper<T> buildDBQueryWrapper(T queryParams);
 
-    public abstract QueryWrapper<T> buildDBQueryWrapper(String ... queryParams);
+
+
 
 }

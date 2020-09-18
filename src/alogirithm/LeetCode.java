@@ -1,12 +1,6 @@
 package alogirithm;
 
-import org.omg.CORBA.PRIVATE_MEMBER;
-import org.springframework.util.CollectionUtils;
-
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.*;
 
 public class LeetCode {
     /**
@@ -132,8 +126,7 @@ public class LeetCode {
         return res;
     }
 
-
-    public static List<List<Integer>> combinationSum3(int[] candidates, int target) {
+    public static List<List<Integer>> combinationSumVer2(int[] candidates, int target) {
 
         List<List<Integer>> res = new ArrayList<>();
         Map<Integer,Integer> dic = new HashMap<>();
@@ -143,38 +136,34 @@ public class LeetCode {
         }
         ArrayList<Integer> set = new ArrayList<>(dic.keySet());
         set.sort(Comparator.comparingInt(Integer::intValue));
-        re3(res,dic,set,0,target,0,new ArrayList<>());
+        re2Ver2(res,dic,set,0,target,0,new ArrayList<>());
         return res;
     }
 
-    public static void re3(List<List<Integer>> res, Map<Integer, Integer> dic, ArrayList<Integer> set, int idx, int target, int cur,List<Integer> such){
-        if(idx == set.size()-1){
-            return;
-        }
-        if(cur == target){
+    public static void re2Ver2(List<List<Integer>> res, Map<Integer, Integer> dic, ArrayList<Integer> set, int idx, int target, int cur, List<Integer> such){
+        if(cur == target) {
             res.add(new ArrayList<>(such));
+        }
+        if(idx == set.size()){
             return;
         }
         int num = dic.get(set.get(idx));
         int t = set.get(idx);
-        for(int i=0;i<num;i++){
+        for(int i=0;i<=num;i++){
             cur += i*t;
             if(cur >target){
-                cur -= i*t;
-                continue;
+                cur-=i*t;
+                break;
             }
             for(int j=0;j<i;j++)
                 such.add(t);
-            re3(res, dic, set, idx+1, target, cur, such);
+                re2Ver2(res, dic, set, idx + 1, target, cur, such);
+
             cur-=i*t;
             for(int j=0;j<i;j++)
                 such.remove(such.size()-1);
         }
     }
-
-
-
-
 
     private static void re2(List<List<Integer>> res,int[] candy,int target,int curSum,List<Integer> such,int idx){
         if(curSum>target){
@@ -216,6 +205,79 @@ public class LeetCode {
     }
 
 
+    //------------------
+
+
+    /**
+     * 找出所有相加之和为 n 的 k 个数的组合。组合中只允许含有 1 - 9 的正整数，并且每种组合中不存在重复的数字。
+     *
+     * 说明：
+     *
+     * 所有数字都是正整数。
+     * 解集不能包含重复的组合。 
+     *
+     *
+     */
+    public static List<List<Integer>> combinationSum3(int k, int n) {
+        List<List<Integer>> list = new ArrayList<>();
+        re3(k,n,list,new ArrayList<>(),0,1);
+        return list;
+    }
+
+    public static void re3(int k, int n,List<List<Integer>> res,List<Integer> curL,int curSum,int num){
+
+        if(curSum > n || num >10 || (curL.size()>=k&&curSum < n))
+            return;
+
+        if(n == curSum){
+            if(curL.size() == k){
+                res.add(new ArrayList<>(curL));
+            }
+            return;
+        }
+
+        for(int i = num; i<=9; i++){
+            curL.add(i);
+            re3(k, n, res, curL, curSum+i, i+1);
+            curL.remove(curL.size()-1);
+        }
+
+
+    }
+
+    //----------------------------
+
+    /**
+     * 给定一个由正整数组成且不存在重复数字的数组，找出和为给定目标正整数的组合的个数。
+     *
+     * 示例:
+     *
+     * nums = [1, 2, 3]
+     * target = 4
+     *
+     * 所有可能的组合为：
+     * (1, 1, 1, 1)
+     * (1, 1, 2)
+     * (1, 2, 1)
+     * (1, 3)
+     * (2, 1, 1)
+     * (2, 2)
+     * (3, 1)
+     *
+     * 请注意，顺序不同的序列被视作不同的组合。
+     *
+     * 因此输出为 7。
+     */
+
+    public int combinationSum4(int[] nums, int target) {
+        return 0;
+    }
+
+
+
+
+
+
     public static void main(String[] args){
         /*List<List<Integer>> s = new ArrayList<>();
         s.add(Arrays.asList(1,3));
@@ -224,9 +286,11 @@ public class LeetCode {
         s.add(Arrays.asList(0));
         System.out.println(canVisitAllRooms(s));*/
 
-        int[] a = {10,1,2,7,6,1,5};
-        List<List<Integer>> res = combinationSum3(a,8);
-        System.out.println(res);
+        /*int[] a = {10,1,2,7,6,1,5};
+        List<List<Integer>> res = combinationSumVer2(a,8);
+        System.out.println(res);*/
+
+        System.out.println(combinationSum3(3,15));
 
     }
 }
