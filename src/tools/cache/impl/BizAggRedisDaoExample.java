@@ -23,16 +23,6 @@ public  class BizAggRedisDaoExample<T> extends RedisMapDao<T> {
     }
 
     @Override
-    public QueryWrapper<T> buildDBQueryWrapper(T queryParams) {
-        return null;
-    }
-
-    @Override
-    public QueryWrapper<T> buildDBQueryWrapper(String... queryParams) {
-        return null;
-    }
-
-    @Override
     public String hashKey(T config) {
         return null;
     }
@@ -43,8 +33,18 @@ public  class BizAggRedisDaoExample<T> extends RedisMapDao<T> {
     }
 
     @Override
+    protected T buildQueryParam(String hashKey) {
+        return null;
+    }
+
+    @Override
     public List<T> getFromDB(T config) {
         return null;
+    }
+
+    @Override
+    public boolean validateParam(T c){
+        return true;
     }
 
 
