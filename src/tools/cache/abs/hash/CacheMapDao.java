@@ -1,10 +1,8 @@
 package tools.cache.abs.hash;
 
-import java.lang.reflect.ParameterizedType;
-import java.util.Collection;
-import java.util.List;
+import tools.cache.abs.RedisCacheDao;
 
-public interface CacheMapDao<T> {
+public interface CacheMapDao<T> extends RedisCacheDao<T> {
 
 
     //HashMap中区分每个容器的key
@@ -13,8 +11,6 @@ public interface CacheMapDao<T> {
     //容器中区分每个元素的key
     String diffKey(T config);
 
-    //双写备份
-    List<T> getFromDB(T config);
 
 
 }

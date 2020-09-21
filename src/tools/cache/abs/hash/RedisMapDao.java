@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.CollectionUtils;
 import tools.JsonUtil;
+import tools.cache.abs.RedisCacheDao;
 
 
 import java.util.*;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
  * 结构：redisKey-Map<hashKey,Map>-Map<diffKey,T>
  * @param <T>
  */
-public abstract class RedisMapDao<T> implements CacheMapDao<T> {
+public abstract class RedisMapDao<T> implements CacheMapDao<T>, RedisCacheDao<T> {
 
     @Autowired
     RedisTemplate redisTemplate;
@@ -51,7 +52,7 @@ public abstract class RedisMapDao<T> implements CacheMapDao<T> {
             return stringTMap;
         } else {
             Map<String,T> mapRes = new HashMap<>();
-            List<T> dbRes = getFromDB(buildQueryParam(hashKey));
+            List<T> dbRes = backUp(buildQueryParam(hashKey));
             if (!CollectionUtils.isEmpty(dbRes)) {
                 mapRes = convertListToMap(dbRes);
                 insertRecordsToCache(hashKey,mapRes);
@@ -95,7 +96,7 @@ public abstract class RedisMapDao<T> implements CacheMapDao<T> {
         return (List<T>)tar.values();
     }
 
-    public abstract List<T> getFromDB(T queryParams);
+
 
     //redis的key
     public abstract String redisPrefix();
