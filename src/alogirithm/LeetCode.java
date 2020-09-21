@@ -1,5 +1,7 @@
 package alogirithm;
 
+import alogirithm.dataStructure.TreeNode;
+
 import java.util.*;
 
 public class LeetCode {
@@ -273,6 +275,44 @@ public class LeetCode {
         return 0;
     }
 
+    /**
+     * 给定一个二叉搜索树（Binary Search Tree），把它转换成为累加树（Greater Tree)，使得每个节点的值是原来的节点值加上所有大于它的节点值之和。
+     *
+     *  
+     *
+     * 例如：
+     *
+     * 输入: 原始二叉搜索树:
+     *               5
+     *             /   \
+     *            2     13
+     *
+     * 输出: 转换为累加树:
+     *              18
+     *             /   \
+     *           20     13
+     *
+     * @param root
+     * @return
+     */
+
+    public static TreeNode convertBST(TreeNode root) {
+        re5(root,0);
+        return root;
+    }
+
+    private static int re5(TreeNode node, int g){
+        if(null == node){
+            return g;
+        }
+        int ge = re5(node.right,g);
+
+        node.val += ge;
+
+        int res = re5(node.left,node.val);
+        return res;
+    }
+
 
 
 
@@ -290,7 +330,13 @@ public class LeetCode {
         List<List<Integer>> res = combinationSumVer2(a,8);
         System.out.println(res);*/
 
-        System.out.println(combinationSum3(3,15));
-
+        TreeNode a = new TreeNode(3);
+        a.left = new TreeNode(1);
+        a.left.left = new TreeNode(0);
+        a.left.right = new TreeNode(2);
+        a.right = new TreeNode(5);
+        a.right.right = new TreeNode(6);
+        a.right.left = new TreeNode(4);
+        convertBST(a);
     }
 }

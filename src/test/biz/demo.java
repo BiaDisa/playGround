@@ -1,10 +1,7 @@
-package tools.biz;
-
-import com.google.inject.internal.cglib.proxy.$Dispatcher;
+package test.biz;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class demo {
 

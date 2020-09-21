@@ -1,4 +1,4 @@
-package tools.biz.dto;
+package test.biz.dto;
 
 import lombok.Data;
 
