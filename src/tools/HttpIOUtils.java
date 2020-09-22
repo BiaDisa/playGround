@@ -3,23 +3,21 @@ package tools;
 import it.sauronsoftware.jave.AudioUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.util.buf.ByteChunk;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-import sun.nio.ch.DirectBuffer;
+import tools.pool.GlobalThreadPool;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import java.nio.channels.ByteChannel;
-import java.nio.channels.Channel;
-import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
+import java.nio.channels.*;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.SynchronousQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,8 +33,7 @@ public class HttpIOUtils {
             .toLowerCase().replaceAll("-", "");// 边界标识
     private final static String PREFIX = "--";// 必须存在
     private final static String LINE_END = "\r\n";
-
-    private static ByteBuffer directBuffer = ByteBuffer.allocateDirect(1024);
+    private static SynchronousQueue<String> delayDeleteFileQueue = new SynchronousQueue<>();
 
 
     /**
@@ -46,11 +43,12 @@ public class HttpIOUtils {
      * @return
      */
     public static File downloadInputStreamVer2(InputStream inputStream,String suffix) {
-        File tmpSource;
+        File tmpDest = null;
         try {
-            tmpSource = generateRandomTmpFile(suffix);
-            ByteChannel ins = (ByteChannel)Channels.newChannel(inputStream);
-            FileChannel fos = new FileOutputStream(tmpSource,true).getChannel();
+            ByteBuffer directBuffer = ByteBuffer.allocateDirect(1024);
+            tmpDest = generateRandomTmpFile(suffix);
+            ReadableByteChannel ins = Channels.newChannel(inputStream);
+            FileChannel fos = new FileOutputStream(tmpDest,true).getChannel();
             while ((ins.read(directBuffer)) != -1) {
                 directBuffer.flip();
                 fos.write(directBuffer);
@@ -60,8 +58,12 @@ public class HttpIOUtils {
             inputStream.close();
             ins.close();
             fos.close();
-            return tmpSource;
+            return tmpDest;
         } catch (IOException e) {
+            if(null != tmpDest && tmpDest.exists()){
+                delayDeleteFileQueue.offer(tmpDest.getName());
+                GlobalThreadPool.execute(HttpIOUtils::deleteFile);
+            }
             e.printStackTrace();
         }
         return null;
@@ -368,11 +370,22 @@ public class HttpIOUtils {
                 f.createNewFile();
             } catch (IOException e) {
                 if(f.exists()){
-                    f.delete();
+                    delayDeleteFileQueue.offer(f.getName());
+                    GlobalThreadPool.execute(()->deleteFile());
                 }
             }
         }
         return f;
+    }
+
+    //-------------exception handle------------------
+    private static void deleteFile(){
+        String fileOnDeleteName = delayDeleteFileQueue.peek();
+        if(StringUtils.isEmpty(fileOnDeleteName)){
+            return;
+        }
+        new File(fileOnDeleteName).delete();
+        log.info("IOUtils:因异常导致的无效文件已删除");
     }
 
 
