@@ -1,6 +1,7 @@
 package test.clazz;
 
-import io.swagger.models.auth.In;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class IntegerTest {
 
@@ -26,6 +27,7 @@ public class IntegerTest {
             //any type of init of Integer cannot
             System.out.println("valueOfType:"+(e == f));
         }
+        AtomicInteger integer = new AtomicInteger(1);
     }
 
 }
