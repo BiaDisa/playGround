@@ -3,6 +3,11 @@ package tools;
 import it.sauronsoftware.jave.AudioUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.pool2.BasePooledObjectFactory;
+import org.apache.commons.pool2.PooledObjectFactory;
+import org.apache.commons.pool2.impl.DefaultPooledObject;
+import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.springframework.data.redis.connection.lettuce.DefaultLettucePool;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import tools.pool.GlobalThreadPool;
@@ -35,7 +40,6 @@ public class HttpIOUtils {
     private final static String LINE_END = "\r\n";
     private static SynchronousQueue<String> delayDeleteFileQueue = new SynchronousQueue<>();
 
-
     /**
      * nio type
      * @param inputStream
@@ -61,7 +65,7 @@ public class HttpIOUtils {
             return tmpDest;
         } catch (IOException e) {
             if(null != tmpDest && tmpDest.exists()){
-                delayDeleteFileQueue.offer(tmpDest.getName());
+                delayDeleteFileQueue.offer(tmpDest.getAbsolutePath());
                 GlobalThreadPool.execute(HttpIOUtils::deleteFile);
             }
             e.printStackTrace();
@@ -370,7 +374,7 @@ public class HttpIOUtils {
                 f.createNewFile();
             } catch (IOException e) {
                 if(f.exists()){
-                    delayDeleteFileQueue.offer(f.getName());
+                    delayDeleteFileQueue.offer(f.getAbsolutePath());
                     GlobalThreadPool.execute(()->deleteFile());
                 }
             }
@@ -380,11 +384,14 @@ public class HttpIOUtils {
 
     //-------------exception handle------------------
     private static void deleteFile(){
-        String fileOnDeleteName = delayDeleteFileQueue.peek();
+        String fileOnDeleteName = delayDeleteFileQueue.poll();
         if(StringUtils.isEmpty(fileOnDeleteName)){
             return;
         }
-        new File(fileOnDeleteName).delete();
+        File f = new File(fileOnDeleteName);
+        if(f.exists()){
+            while(!f.delete());
+        }
         log.info("IOUtils:因异常导致的无效文件已删除");
     }
 

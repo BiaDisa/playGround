@@ -10,6 +10,7 @@ public class FileNIO {
 
     public static void main(String[] args){
         File in = new File(dir + "\\后台篇.pdf");
+        System.out.println(in.getAbsolutePath());
         InputStream is = HttpIOUtils.getStreamFromFile(in);
         HttpIOUtils.downloadInputStreamVer2(is,"pdf");
     }
