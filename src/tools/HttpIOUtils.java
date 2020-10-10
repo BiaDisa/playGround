@@ -1,28 +1,25 @@
 package tools;
 
+import com.sun.jdi.StringReference;
 import it.sauronsoftware.jave.AudioUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.pool2.BasePooledObjectFactory;
-import org.apache.commons.pool2.PooledObjectFactory;
-import org.apache.commons.pool2.impl.DefaultPooledObject;
-import org.apache.commons.pool2.impl.GenericObjectPool;
-import org.springframework.data.redis.connection.lettuce.DefaultLettucePool;
+import org.openjdk.jmh.annotations.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import tools.pool.GlobalThreadPool;
 
+import javax.el.ValueReference;
 import java.io.*;
+import java.lang.ref.PhantomReference;
+import java.lang.ref.SoftReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.*;
 import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,6 +36,37 @@ public class HttpIOUtils {
     private final static String PREFIX = "--";// 必须存在
     private final static String LINE_END = "\r\n";
     private static SynchronousQueue<String> delayDeleteFileQueue = new SynchronousQueue<>();
+/*
+    private static SoftReference<ByteBuffer> buffer = new SoftReference<>(ByteBuffer.allocateDirect(1024));
+*/
+    public static File downloadInputStreamVer4(InputStream inputStream,String suffix) {
+        File tmpDest = null;
+        try {
+            ByteBuffer bb = ByteBuffer.allocateDirect(1024);
+            tmpDest = generateRandomTmpFile(suffix);
+            ReadableByteChannel ins = Channels.newChannel(inputStream);
+            FileChannel fos = new FileOutputStream(tmpDest,true).getChannel();
+            while ((ins.read(bb) != -1)) {
+                bb.flip();
+                fos.write(bb);
+                bb.clear();
+            }
+            bb.clear();
+            inputStream.close();
+            ins.close();
+            fos.close();
+            return tmpDest;
+        } catch (IOException e) {
+            if(null != tmpDest && tmpDest.exists()){
+                delayDeleteFileQueue.offer(tmpDest.getAbsolutePath());
+                GlobalThreadPool.execute(HttpIOUtils::deleteFile);
+            }
+            e.printStackTrace();
+        }
+        return null;
+}
+
+
 
     /**
      * nio type
@@ -49,16 +77,16 @@ public class HttpIOUtils {
     public static File downloadInputStreamVer2(InputStream inputStream,String suffix) {
         File tmpDest = null;
         try {
-            ByteBuffer directBuffer = ByteBuffer.allocateDirect(1024);
+            ByteBuffer bb = ByteBuffer.allocateDirect(1024);
             tmpDest = generateRandomTmpFile(suffix);
             ReadableByteChannel ins = Channels.newChannel(inputStream);
             FileChannel fos = new FileOutputStream(tmpDest,true).getChannel();
-            while ((ins.read(directBuffer)) != -1) {
-                directBuffer.flip();
-                fos.write(directBuffer);
-                directBuffer.clear();
+            while ((ins.read(bb) != -1)) {
+                bb.flip();
+                fos.write(bb);
+                bb.clear();
             }
-            directBuffer.clear();
+            bb.clear();
             inputStream.close();
             ins.close();
             fos.close();
@@ -73,10 +101,54 @@ public class HttpIOUtils {
         return null;
     }
 
+
+
+    /**
+     * nio type
+     * @param inputStream
+     * @param suffix
+     * @return
+     */
+    public static File downloadInputStreamVer3(InputStream inputStream,String suffix) {
+        File tmpDest = null;
+        try {
+            ByteBuffer bb = ByteBuffer.allocate(1024);
+
+            tmpDest = generateRandomTmpFile(suffix);
+            ReadableByteChannel ins = Channels.newChannel(inputStream);
+            FileChannel fos = new FileOutputStream(tmpDest,true).getChannel();
+            while ((ins.read(bb) != -1)) {
+                bb.flip();
+                fos.write(bb);
+                bb.clear();
+            }
+            bb.clear();
+            inputStream.close();
+            ins.close();
+            fos.close();
+            return tmpDest;
+        } catch (IOException e) {
+            if(null != tmpDest && tmpDest.exists()){
+                delayDeleteFileQueue.offer(tmpDest.getAbsolutePath());
+                GlobalThreadPool.execute(HttpIOUtils::deleteFile);
+            }
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+
+
+
+
+
+
     /**
      * 流写入文件
      */
     @SuppressWarnings("can throw null val")
+    @Deprecated
     public static File downloadInputStream(InputStream inputStream,String suffix) {
 
         File tmpSource = null;
@@ -93,6 +165,10 @@ public class HttpIOUtils {
             fos.close();
             return tmpSource;
         } catch (IOException e) {
+            if(null != tmpSource && tmpSource.exists()){
+                delayDeleteFileQueue.offer(tmpSource.getAbsolutePath());
+                GlobalThreadPool.execute(HttpIOUtils::deleteFile);
+            }
             e.printStackTrace();
         }
         return null;
@@ -214,7 +290,7 @@ public class HttpIOUtils {
             os.flush();
 
             // 读取服务器端返回的内容
-            System.out.println("ResponseCode:" + conn.getResponseCode()
+            log.info("ResponseCode:" + conn.getResponseCode()
                     + ",ResponseMessage:" + conn.getResponseMessage());
             if(conn.getResponseCode()==200){
                 input = conn.getInputStream();
@@ -362,7 +438,7 @@ public class HttpIOUtils {
 
 
     private static File generateRandomTmpFile(String suffix)  {
-        String dir = "resources/tmp/";
+        String dir = "resources/tmp2/";
         String fileName = dir+UUIDGenerator.getShortenUUID()+"."+suffix;
         File dirTar = new File(dir);
         File f = new File(fileName);
@@ -392,8 +468,10 @@ public class HttpIOUtils {
         if(f.exists()){
             while(!f.delete());
         }
-        log.info("IOUtils:因异常导致的无效文件已删除");
+        System.out.println("IOUtils:因异常导致的无效文件已删除");
     }
+
+
 
 
 }

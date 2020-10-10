@@ -1,16 +1,16 @@
-package tools;
+package tools.sign;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
+
 
 import java.io.IOException;
 import java.util.List;
 
-@Slf4j
+
 public class JsonUtil {
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -35,7 +35,6 @@ public class JsonUtil {
         try {
             return mapper.readValue(json, type);
         } catch (IOException e) {
-            log.error(e.getMessage());
             e.printStackTrace();
         }
         return null;

@@ -318,17 +318,17 @@ public class LeetCode {
 
 
 
-    public static void main(String[] args){
-        /*List<List<Integer>> s = new ArrayList<>();
+    /*public static void main(String[] args){
+        *//*List<List<Integer>> s = new ArrayList<>();
         s.add(Arrays.asList(1,3));
         s.add(Arrays.asList(3,0,1));
         s.add(Arrays.asList(2));
         s.add(Arrays.asList(0));
-        System.out.println(canVisitAllRooms(s));*/
+        System.out.println(canVisitAllRooms(s));*//*
 
-        /*int[] a = {10,1,2,7,6,1,5};
+        *//*int[] a = {10,1,2,7,6,1,5};
         List<List<Integer>> res = combinationSumVer2(a,8);
-        System.out.println(res);*/
+        System.out.println(res);*//*
 
         TreeNode a = new TreeNode(3);
         a.left = new TreeNode(1);
@@ -338,5 +338,5 @@ public class LeetCode {
         a.right.right = new TreeNode(6);
         a.right.left = new TreeNode(4);
         convertBST(a);
-    }
+    }*/
 }

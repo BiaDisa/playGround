@@ -1,4 +1,4 @@
-package tools;
+package tools.sign;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

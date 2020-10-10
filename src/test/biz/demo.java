@@ -6,7 +6,7 @@ import java.util.List;
 public class demo {
 
 
-    public static void main(String[] args){
+   /* public static void main(String[] args){
         List<Integer> list = new ArrayList<>();
         for(int i = 0;i<1000;i++){
             list.add(i);
@@ -14,7 +14,7 @@ public class demo {
         list.add(1000001);
         List<List<Integer>> res = splitArr(list);
         System.out.println(res);
-    }
+    }*/
 
     private static List<List<Integer>> splitArr(List<Integer> list){
         List<List<Integer>> res = new ArrayList<>();

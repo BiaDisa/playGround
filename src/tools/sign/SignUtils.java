@@ -1,13 +1,9 @@
-package tools;
+package tools.sign;
 
-import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.lang.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.Arrays;
@@ -18,7 +14,7 @@ import java.util.Set;
 /**
  * Created by wangqichang on 2018/11/28.
  */
-@Slf4j
+
 public class SignUtils {
 
     private static String TIME_STAMP_KEY = "timeStamp";
@@ -67,9 +63,9 @@ public class SignUtils {
             temp.append(valueString);
         }
         //根据参数生成签名
-        log.info("signStr:"+temp.toString() + secretKey+timeStamp);
         System.out.println(temp.toString() + secretKey);
 //        String sign = getMD5(temp.toString() + secretKey+timeStamp).toUpperCase();
+        System.out.println(timeStamp);
         String sign = Md5Util.md5(temp.toString() + secretKey+timeStamp).toUpperCase();
         params.put(SIGN_KEY, sign);
         return params;
@@ -147,14 +143,82 @@ public class SignUtils {
         Map paramMap = SignUtils.getSignature(paramTmp, secretKey,timeStamp);
         String signature = (String) paramMap.get("sign");
         System.out.println(signature);
-        log.info("VerifySignParam:{},VerifySign : {}", JSONObject.toJSONString(paramTmp),signature);
-        log.info("ParamSignParam:{},ParamSign : {}", JSONObject.toJSONString(paramTmp),sign);
         if (!sign.equals(signature)) {
-            log.info("sign签名错误");
             throw new RuntimeException("sign签名错误");
         }
         return true;
     }
+
+
+    public static String getSignature(HashMap<String,Object> param, String secretKey) throws Exception {
+        //获取request中的json参数转成map
+
+        Long timeStamp;
+
+
+        Map<String, Object> paramTmp = new HashMap<>();
+        if(null != param){
+            if(null != param.get("baseParams")){
+                Map<String,Object> baseParams = (Map<String, Object>) param.get("baseParams");
+                if(null == baseParams || baseParams.isEmpty()){
+                    throw new RuntimeException("baseParams为空");
+                }
+                baseParams.forEach((k,v)->
+                        {
+                            if((v instanceof String
+                                    || v instanceof Long
+                                    || v instanceof Integer
+                                    || v instanceof Boolean
+                                    || v instanceof Double) && null != v && org.apache.commons.lang3.StringUtils.isNotBlank(v.toString())){
+                                paramTmp.put(k,v);
+                            }
+
+                        }
+                );
+            }
+            if(null != param.get("signParams")){
+                Map<String,Object> signParams = (Map<String, Object>) param.get("signParams");
+                signParams.forEach((k,v)->
+                        {
+                            if((v instanceof String
+                                    || v instanceof Long
+                                    || v instanceof Integer
+                                    || v instanceof Boolean
+                                    || v instanceof Double) && null != v && org.apache.commons.lang3.StringUtils.isNotBlank(v.toString())){
+                                paramTmp.put(k,v);
+                            }
+                        }
+                );
+            }
+
+        }
+        if(null != param.get(TIME_STAMP_KEY)){
+            timeStamp = Long.parseLong(param.get(TIME_STAMP_KEY).toString());
+        }else{
+            timeStamp = System.currentTimeMillis();
+        }
+
+        String sign = param.get(SIGN_KEY).toString().toUpperCase();
+        Long start = Long.parseLong(param.get(TIME_STAMP_KEY).toString());
+        long now = System.currentTimeMillis();
+        //校验时间有效性
+        if (start == null || now - start > EXPIRE_TIME ) {
+            /*throw new RuntimeException("请求参数过时");*/
+        }
+        //是否携带签名
+        if (StringUtils.isBlank(sign)) {
+            /*log.info("sign签名参数为空");
+            throw new RuntimeException("sign签名参数为空");*/
+        }
+        //获取除签名外的参数
+        param.remove(SIGN_KEY);
+        //校验签名
+        Map paramMap = SignUtils.getSignature(paramTmp, secretKey,timeStamp);
+        String signature = (String) paramMap.get("sign");
+        return signature;
+    }
+
+
 
 
     public static String getMD5(String str) throws  Exception{

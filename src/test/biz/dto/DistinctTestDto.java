@@ -42,11 +42,11 @@ public class DistinctTestDto {
         return Objects.hash(s1, s2);
     }
 
-    public static void main(String[] args){
+    /*public static void main(String[] args){
         List<DistinctTestDto> test = new ArrayList<>();
         test.add(new DistinctTestDto("1","1",1));
         test.add(new DistinctTestDto("1","1",2));
         test = test.stream().distinct().collect(Collectors.toList());
         test.forEach(System.out::println);
-    }
+    }*/
 }
