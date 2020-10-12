@@ -4,13 +4,13 @@ import java.io.*;
 
 public class SourceCodeCutter {
     public static void main(String[] args) {
-        String path = "C:\\solidBackup\\project-aspect\\biz\\molded-training\\src\\main\\java"; //要遍历的路径
+        String path = "C:\\solidBackup\\project-aspect\\learning-admin\\src\\main\\java"; //要遍历的路径
         File file = new File(path); //获取其file对象
         StringBuilder data = new StringBuilder();
         getFileList(file,data);
 
 
-        WriteStringToFile("C:\\solidBackup\\rawCase\\sourceCode-txt\\moldedTraining.txt",data.toString());//遍历path下的文件和目录，放在File数组中
+        WriteStringToFile("C:\\solidBackup\\rawCase\\soft-auth\\培训管理系统\\learningAdmin.txt",data.toString());//遍历path下的文件和目录，放在File数组中
         System.out.println(data.length());
         System.out.println("finish");
     }
