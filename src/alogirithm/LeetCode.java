@@ -1,6 +1,7 @@
 package alogirithm;
 
 import alogirithm.dataStructure.TreeNode;
+import org.apache.poi.ss.formula.ptg.AreaErrPtg;
 
 import java.util.*;
 
@@ -313,30 +314,111 @@ public class LeetCode {
         return res;
     }
 
+    /**
+     * 给你一棵所有节点为非负值的二叉搜索树，请你计算树中任意两节点的差的绝对值的最小值。
+     */
+
+    static int min = Integer.MAX_VALUE;
+
+    public static int getMinimumDifference(TreeNode root) {
+
+        return 0;
+
+    }
+
+    public static void re(TreeNode root,int min){
+
+    }
+
+    public List<String> commonChars(String[] A) {
+        List<String> res = new ArrayList<>();
+        int[][] arr = new int[A.length][26];
+        int[] tar = new int[26];
+        int start = 'a';
+        for(int i=0;i<A.length;i++){
+            for (int j = 0; j < A[i].length(); j++) {
+                arr[i][(A[i].charAt(j)-start)]++;
+            }
+        }
+
+        for (int i = 0; i < tar.length; i++) {
+            int min = arr[0][i];
+            for(int j=0;j<A.length;j++){
+                if(arr[j][i] == 0) {
+                    min = 0;
+                    break;
+                }
+                min = Math.min(arr[j][i],min);
+            }
+            tar[i] = min;
+        }
+
+        for (int i =0;i<tar.length;i++) {
+                for(int j=0;j<tar[i];j++)
+                    res.add(String.valueOf((char)('a'+i)));
+        }
+        return res;
+    }
+
+    /**
+     * 字符串 S 由小写字母组成。
+     * 我们要把这个字符串划分为尽可能多的片段，同一个字母只会出现在其中的一个片段。
+     * 返回一个表示每个字符串片段的长度的列表。
+     * 输入：S = "ababcbacadefegdehijhklij"
+     * 输出：[9,7,8]
+     * 解释：
+     * 划分结果为 "ababcbaca", "defegde", "hijhklij"。
+     * 每个字母最多出现在一个片段中。
+     * 像 "ababcbacadefegde", "hijhklij" 的划分是错误的，因为划分的片段数较少。
+     *
+     * 来源：力扣（LeetCode）
+     * 链接：https://leetcode-cn.com/problems/partition-labels
+     * 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+     * S的长度在[1, 500]之间。
+     * S只包含小写字母 'a' 到 'z' 。
+     * @param args
+     */
+
+    /**
+     * 1、实现一个方法，
+     * 入参为一个字符串（只有字母不区分大小写），
+     * 返回值为该字符串中每个字母出现的次数
+     * @param
+     */
+    public static int[] test(String a){
+        int[] res = new int[26];
+        char[] source = a.toCharArray();
+        int base = 'a';
+        for (char c : source)
+            res[Character.toLowerCase(c)-base]++;
+        return res;
+    }
+
+    /**
+     * 2、假设传入的字符串中包含字母的个数为N，其中不重复的字母数为M
+     * 则该方法最少需要循环次数为几次？
+     * @param args
+     */
 
 
 
-
-
-    /*public static void main(String[] args){
-        *//*List<List<Integer>> s = new ArrayList<>();
+    public static void main(String[] args){
+        /*List<List<Integer>> s = new ArrayList<>();
         s.add(Arrays.asList(1,3));
         s.add(Arrays.asList(3,0,1));
         s.add(Arrays.asList(2));
         s.add(Arrays.asList(0));
-        System.out.println(canVisitAllRooms(s));*//*
+        System.out.println(canVisitAllRooms(s));
 
-        *//*int[] a = {10,1,2,7,6,1,5};
+        int[] a = {10,1,2,7,6,1,5};
         List<List<Integer>> res = combinationSumVer2(a,8);
-        System.out.println(res);*//*
+        System.out.println(res);*/
 
-        TreeNode a = new TreeNode(3);
-        a.left = new TreeNode(1);
-        a.left.left = new TreeNode(0);
-        a.left.right = new TreeNode(2);
-        a.right = new TreeNode(5);
-        a.right.right = new TreeNode(6);
-        a.right.left = new TreeNode(4);
-        convertBST(a);
-    }*/
+       /* TreeNode a = new TreeNode(1);
+        a.left = null;
+        a.right = new TreeNode(3);
+        a.right.left = new TreeNode(2);
+        getMinimumDifference(a);*/
+        System.out.println(Arrays.toString(test("AsAAQWEQEZz")));
+    }
 }

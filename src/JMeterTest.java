@@ -1,15 +1,11 @@
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import pojo.ExcelTur;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class JMeterTest {
 
     public static HashMap vars;
-    public static void main(String[] args){
+    public static void main(String[] args) throws InterruptedException {
 //        String response_data = prev.getResponseDataAsString();
 //        JSONObject jsonObject = JSONObject.parseObject(response_data);
 //        JSONArray list = jsonObject.getJSONObject("data").getJSONArray("prologue");
@@ -31,9 +27,33 @@ public class JMeterTest {
 //            vars.put("tagId",tagIdVal.toString());
 //            vars.put("tagSort",tagSort.toString());
 //        }
+        /* String a = "{公司}{代理人姓名}";
+        a=  a.replace("{公司}","12345");
+        a = a.replace("{代理人姓名}","aaaaaaaaaaa");
+        System.out.println(a);*/
 
-        List<Integer> a = new ArrayList<>();
-        a.forEach(System.out::println);
+/*        ExcelTur excelTur = ExcelTur.builder().itemId("123").itemName("456").itemType("类型").tenantId("ss").tenantName("go").build();
+        CloneTestTur tur = (CloneTestTur) excelTur.clone();
+        System.out.println(tur.equals(excelTur));
+        WeakReferenceQueue<Object> weakReferenceQueue = new WeakReferenceQueue<>();
+        weakReferenceQueue.add("123");
+        WeakReference<Object> ref = new WeakReference(excelTur);
+        System.out.println(((ExcelTur)ref.get()).getItemId());
+        System.gc();
+        Thread.sleep(10000l);
+        System.out.println(((ExcelTur)ref.get()).getItemId());*/
+        /*ExcelTur a = new ExcelTur();
+        a.setTenantId("2");
+        System.out.println(a.getTenantId());
+        func();
+        System.out.println(a.getTenantId());*/
+        System.out.println(1<<30);
+    }
+
+    public static void func(){
+        ExcelTur a = new ExcelTur();
+        a.setTenantId("111");
+        System.out.println(a.getTenantId());
 
     }
 }
