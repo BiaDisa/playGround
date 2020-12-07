@@ -21,19 +21,18 @@ public class ManualDecrypt {
      */
 
     public static void main(String[] args) {
-        String password = "F2oL59GkgU6KLZippIRaQvzQ";
+        String password = "Rlc1BqEs2okSiqShMuCx5CJP";
 
-        String crypt = "hEhNRgKpcmCK8Czbzj9RT1+EDq/7zwR4FRfdoO4btF3tVXzikAXNRw==";
+        String encrypt = "NDc1hTzd1L9RAoyvh9XPV2vIV6Xk/XuDiLp68eDE+Rbad4cIZ/504smkpHXDLO22";
 
-        decrypted(password,crypt);
-       /* String message = "material_center_rw";
-        String encrypted = encrypted(password, message);
+        decrypted(password,encrypt);
+/*        String encrypted = encrypted(password, message);
         // String encrypted = "LnIfI1J3JckCIPyMG1QDBZgL51TaVOhnLeUKJ8ceJMEYaLUx9A6gcoIAfaehR2O8h3lP8J2kb48tNK7n6uVpZsG7a9Cke/NGeELdj0sibnlnv+Gv88tM8Ec8rKaA+L85";
 
         decrypted(password, encrypted);*/
 
 
-     /*   File file = new File("C:\\solidBackup\\project-aspect\\biz\\ext-sys-integration\\src\\main\\resources\\application-prod.yml");
+       /* File file = new File("C:\\solidBackup\\project-aspect\\biz\\visit\\src\\main\\resources\\application-prod.yml" );
 
         BufferedReader reader = null;
         try {
@@ -67,8 +66,8 @@ public class ManualDecrypt {
                     e1.printStackTrace();
                 }
             }
-        }*/
-
+        }
+*/
     }
 
     public static String encrypted(String password, String message) {

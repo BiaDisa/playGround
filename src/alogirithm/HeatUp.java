@@ -1,6 +1,6 @@
 package alogirithm;
 
-import alogirithm.dataStructure.ListNode;
+import alogirithm.dataStructure.linkedLists.ListNode;
 
 public class HeatUp {
 
@@ -19,9 +19,9 @@ public class HeatUp {
     }
 
     public static void  main(String[] args){
-        ListNode<Integer> node = new ListNode<>(1);
-        node.next = new ListNode<>(2);
-        node.next.next = new ListNode<>(3);
+        ListNode node = new ListNode(1);
+        node.next = new ListNode(2);
+        node.next.next = new ListNode(3);
         node = reverseLinkedList(node);
         while(node!=null){
             System.out.println(node.val);
