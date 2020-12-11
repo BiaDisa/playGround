@@ -1,5 +1,7 @@
 package alogirithm.dataStructure.linkedLists;
 
+import alogirithm.dataStructure.trees.TreeNode;
+
 public class LeetCodeListQuesMedium {
     /**
      * 1669. 合并两个链表
@@ -73,7 +75,12 @@ public class LeetCodeListQuesMedium {
      *    /   /
      *  -10  5
      * @param args
+     *  todo - 二叉搜索树
      */
+    public static TreeNode sortedListToBST(ListNode head) {
+        TreeNode res = new TreeNode() ;
+        return res;
+    }
 
     public static void main(String[] args) {
         int[] a = {0,1,2,3,4,5};

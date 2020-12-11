@@ -6,10 +6,10 @@ package alogirithm.dataStructure.trees;
      TreeNode left;
      TreeNode right;
 
-     TreeNode() {
+     public TreeNode() {
      }
 
-     TreeNode(int val) {
+     public TreeNode(int val) {
          this.val = val;
      }
 
