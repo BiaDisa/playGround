@@ -12,12 +12,17 @@ import tools.HttpIOUtils;
 import tools.pool.GlobalThreadPool;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.channels.AsynchronousFileChannel;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode({Mode.Throughput})
 @State(value = Scope.Thread)
-@Timeout(time = 10,timeUnit = TimeUnit.MINUTES)
+@Timeout(time = 2,timeUnit = TimeUnit.MINUTES)
 @Warmup(iterations = 3, time = 30,timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 3, time = 1,timeUnit = TimeUnit.MINUTES)
 @OutputTimeUnit(TimeUnit.SECONDS)
@@ -71,6 +76,17 @@ public class FileNIO {
         if(null != f && f.exists()) {
             f.delete();
         }
+    }
+
+    @Benchmark
+    public static void asyncChannel(Blackhole blackhole) throws IOException {
+        Path path = Paths.get(dir + "\\产研后期工作节奏.jpg");
+        AsynchronousFileChannel fileChannel =AsynchronousFileChannel.open(path, StandardOpenOption.READ);
+        File f = HttpIOUtils.downloadInputStreamVer5(fileChannel,"jpg");
+        if(null != f && f.exists()){
+            f.delete();
+        }
+
     }
 
 

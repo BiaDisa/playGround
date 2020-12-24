@@ -1,25 +1,22 @@
 package tools;
 
-import com.sun.jdi.StringReference;
 import it.sauronsoftware.jave.AudioUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.openjdk.jmh.annotations.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import tools.pool.GlobalThreadPool;
 
-import javax.el.ValueReference;
 import java.io.*;
-import java.lang.ref.PhantomReference;
-import java.lang.ref.SoftReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
+import java.util.concurrent.Future;
 import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -99,6 +96,29 @@ public class HttpIOUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+
+    public static File downloadInputStreamVer5(AsynchronousFileChannel fileChannel,String suffix) throws IOException {
+        File f = generateRandomTmpFile(suffix);
+        AsynchronousFileChannel outChannel =
+                AsynchronousFileChannel.open(Paths.get(f.getAbsolutePath()), StandardOpenOption.WRITE);
+        ByteBuffer buffer = ByteBuffer.allocate(10240);
+        long position = 0;
+        long writePos = 0;
+        while(fileChannel.isOpen()){
+            Future<Integer> operation = fileChannel.read(buffer, position);
+            while (!operation.isDone()) ;
+            position+=10240;
+            if(buffer.array().length == 0){
+                break;
+            }
+            Future<Integer> outOp = outChannel.write(buffer, writePos);
+            writePos+=10240;
+            buffer.flip();
+    }
+        return f;
     }
 
 

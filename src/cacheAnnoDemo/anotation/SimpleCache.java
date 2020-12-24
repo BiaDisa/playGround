@@ -1,5 +1,5 @@
 package cacheAnnoDemo.anotation;
-import cacheAnnoDemo.item.CacheMethod;
+import cacheAnnoDemo.item.CacheMethodEnum;
 
 import java.lang.annotation.*;
 import java.time.temporal.ChronoUnit;
@@ -12,12 +12,12 @@ public @interface SimpleCache {
     /**
      * keys source
      */
-        String[] keys() default {""};
+    String[] keys() default {""};
 
     /**
      * key generator method
      */
-    CacheMethod cacheMethod() default CacheMethod.SIMPLE_CONCAT;
+    CacheMethodEnum cacheMethod() default CacheMethodEnum.SIMPLE_CONCAT;
 
     /**
      * cache time
@@ -28,5 +28,7 @@ public @interface SimpleCache {
      * timeUnit
      */
     ChronoUnit timeUnit() default ChronoUnit.MINUTES;
+
+    Class[] cacheTargets()  default {};
 
 }

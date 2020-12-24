@@ -8,14 +8,15 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CacheItem {
+public class CacheDomain {
 
-    private Object item;
+    private HashMap<String,Object> item;
 
     private int duration;
 
@@ -23,11 +24,15 @@ public class CacheItem {
 
     private LocalTime time;
 
-    public CacheItem(Object item, SimpleCache simpleCache) {
+    public CacheDomain(HashMap item, SimpleCache simpleCache) {
         this.item = item;
         this.duration = simpleCache.duration();
         this.timeUnit = simpleCache.timeUnit();
         time = LocalTime.now();
+    }
+
+    public void remove(String key){
+        item.remove(key);
     }
 
     public boolean isValid(){
