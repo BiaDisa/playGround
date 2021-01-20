@@ -12,7 +12,7 @@ public @interface SimpleCache {
     /**
      * keys source
      */
-    String[] keys() default {""};
+    String prefixKey() default "";
 
     /**
      * key generator method
@@ -29,6 +29,6 @@ public @interface SimpleCache {
      */
     ChronoUnit timeUnit() default ChronoUnit.MINUTES;
 
-    Class[] cacheTargets()  default {};
+    Class cacheTargets() default Object.class;
 
 }

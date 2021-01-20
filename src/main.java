@@ -1,8 +1,16 @@
 import cacheAnnoDemo.item.CacheKeyStrategy;
+import cacheAnnoDemo.item.CacheMethodEnum;
 import com.jiniu.common.core.utils.DateUtils;
+import it.sauronsoftware.jave.AudioAttributes;
+import it.sauronsoftware.jave.Encoder;
+import it.sauronsoftware.jave.EncodingAttributes;
+import it.sauronsoftware.jave.InputFormatException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,16 +44,23 @@ public class main {
         try {
             method = clazz.getDeclaredMethod(methodName,Object[].class);
             System.out.println(method.getName());
-            Object[] arg = {args};
-            method.invoke(arg,null);
+            Object[] arg = {"s","go"};
+            Object o = new Object[]{arg};
+            Object res = method.invoke(clazz.newInstance(),o);
+            System.out.println(res.toString());
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }*/
 
-    }
+/*
+        System.out.println(CacheMethodEnum.SIMPLE_CONCAT.generateKey(new Object[]{1,23}));
+*/
 
+
+    }
+/*
     private static int getRandomInterval(){
         Random random = new Random();
         return BASE_INTERVAL+random.nextInt(BASE_INTERVAL);
-    }
+    }*/
 }

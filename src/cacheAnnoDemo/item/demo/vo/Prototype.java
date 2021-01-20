@@ -2,9 +2,11 @@ package cacheAnnoDemo.item.demo.vo;
 
 import cacheAnnoDemo.item.CacheArgs;
 import cacheAnnoDemo.item.CachePrefix;
+import cacheAnnoDemo.item.CacheType;
 
 import java.util.List;
 
+@CacheType
 public class Prototype {
 
     @CachePrefix

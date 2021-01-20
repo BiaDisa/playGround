@@ -13,12 +13,12 @@ public enum CacheMethodEnum {
     private String methodName;
     private int code;
     private Method method;
+    private Class clazz = CacheKeyStrategy.class;
 
     CacheMethodEnum(String desc, String methodName, int code) {
         this.desc = desc;
         this.methodName = methodName;
         this.code = code;
-        Class clazz = CacheKeyStrategy.class;
         try {
             method = clazz.getDeclaredMethod(methodName,Object[].class);
         } catch (NoSuchMethodException e) {
@@ -26,14 +26,14 @@ public enum CacheMethodEnum {
         }
     }
 
-    public String generateKey(Object[] args){
+    public String generateKey(Object[] args,String prefix){
         Object res = new Object();
         try {
-            res = method.invoke(args);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+            res = method.invoke(clazz.newInstance(),new Object[]{args});
+        } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
             e.printStackTrace();
         }
-        return (String) res;
+        return prefix + (String) res;
     }
 
 

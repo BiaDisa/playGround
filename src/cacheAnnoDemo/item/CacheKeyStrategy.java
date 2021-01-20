@@ -1,6 +1,8 @@
 package cacheAnnoDemo.item;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class CacheKeyStrategy {
@@ -15,9 +17,11 @@ public class CacheKeyStrategy {
     private static String concatArgs(Object[] args) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < args.length; i++) {
-
+            if(args[i].getClass().isArray()){
+                sb.append(concatArgs((Object[]) args[i]));
+                continue;
+            }
                 sb.append(args[i]).append(i == args.length-1?"":delimiter);
-
         }
         return sb.toString();
     }

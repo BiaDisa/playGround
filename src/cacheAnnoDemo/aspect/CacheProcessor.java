@@ -3,6 +3,7 @@ package cacheAnnoDemo.aspect;
 import cacheAnnoDemo.anotation.SimpleCache;
 import cacheAnnoDemo.item.CacheMethodEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -15,8 +16,6 @@ import java.util.Objects;
 @Aspect
 @Slf4j
 public abstract class CacheProcessor {
-
-
 
     @Around("@annotation(cacheAnnoDemo.anotation.SimpleCache)")
     public void doAround(ProceedingJoinPoint pjp) throws NoSuchMethodException {
@@ -31,26 +30,23 @@ public abstract class CacheProcessor {
 
         Method method = targetClass.getMethod(methodName, parameterClazz);
 
-        final String cacheKey = getCacheKey(method,args);
-
-        cacheProcess(cacheKey,args);
-    }
-
-    private String getCacheKey(Method method,Object[] args){
-        Objects.requireNonNull(method);
+        //todo 注解信息写入cache中
         SimpleCache annotation = method.getAnnotation(SimpleCache.class);
-        String[] argNames = annotation.keys();
-        Class[] tars = annotation.cacheTargets();
-
+        Class tar = annotation.cacheTargets();
         CacheMethodEnum cacheMethodEnum = annotation.cacheMethod();
-        String key = cacheMethodEnum.generateKey(args);
-        if(argNames.length == 0){
-            return "cacheKey-nil";
-        }
-        return key;
+        final String cacheKey = getCacheKey(cacheMethodEnum,args,annotation.prefixKey());
+        cacheProcess(cacheKey,args,tar);
     }
 
-    abstract boolean cacheProcess(String key,Object[] args);
+    private String getCacheKey(CacheMethodEnum cacheMethodEnum,Object[] args,String prefixKey){
+        String key = cacheMethodEnum.generateKey(args,prefixKey);
+        if(StringUtils.isEmpty(key)){
+            return prefixKey + "cacheKey-nil";
+        }
+        return prefixKey + key;
+    }
+
+    abstract boolean cacheProcess(String key,Object[] args,Class tars);
 
 
 }
