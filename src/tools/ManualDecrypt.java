@@ -23,7 +23,7 @@ public class ManualDecrypt {
     public static void main(String[] args) {
         String password = "Rlc1BqEs2okSiqShMuCx5CJP";
 
-        String encrypt = "NDc1hTzd1L9RAoyvh9XPV2vIV6Xk/XuDiLp68eDE+Rbad4cIZ/504smkpHXDLO22";
+        String encrypt = "ojtKTccL1T+TGgyG0NgFFFYXSBU+cgxE9+AewmFNuZjPtZoT6jR2SIYjdPrZMM5RRgyEjotoP6anX/sWeuxDTMtJWCUlYqTRvqs59dS6F/v5th7mjoIOZp2DrFfF0brf";
 
         decrypted(password,encrypt);
 /*        String encrypted = encrypted(password, message);
